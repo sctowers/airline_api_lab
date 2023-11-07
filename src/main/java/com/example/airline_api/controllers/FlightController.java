@@ -52,4 +52,11 @@ public class FlightController {
         return new ResponseEntity(removeFlight, HttpStatus.OK);
     }
 
+    // Add functionality to filter flights by destination
+    @GetMapping("/byDestination")
+    public ResponseEntity<List<Flight>> getFlightsByDestination(@RequestBody String destination){
+        List<Flight> flights = flightService.getFlightsByDestination(destination);
+        return new ResponseEntity<>(flights, HttpStatus.OK);
+    }
+
 }

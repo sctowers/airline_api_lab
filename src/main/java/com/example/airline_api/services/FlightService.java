@@ -57,5 +57,10 @@ public class FlightService {
         flight.getPassengers().clear();
         flightRepository.delete(flight);
         return flight;
-        }
+    }
+
+    // Add functionality to filter flights by destination
+    public List<Flight> getFlightsByDestination(String destination){
+        return flightRepository.findByDestination(destination);
+    }
 }
