@@ -1,59 +1,25 @@
 package com.example.airline_api.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "flights")
-public class Flight {
+public class FlightDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private long id;
-
-    @Column
     private String destination;
-
-    @Column
     private int capacity;
-
-    @Column
     private String departureDate;
-
-    @Column
     private String departureTime;
+    private List<Long> passengerIds;
 
-    @JsonIgnoreProperties({"flights"})
-    @ManyToMany
-    @JoinTable(
-            name = "flights_passengers",
-            joinColumns = @JoinColumn(name = "flight_id"),
-            inverseJoinColumns = @JoinColumn(name = "passenger_id")
-    )
-    private List<Passenger> passengers;
-
-    public Flight(String destination, int capacity, String departureDate, String departureTime) {
+    public FlightDTO(String destination, int capacity, String departureDate, String departureTime, List<Long> passengerIds) {
         this.destination = destination;
         this.capacity = capacity;
         this.departureDate = departureDate;
         this.departureTime = departureTime;
-        this.passengers = new ArrayList<>();
+        this.passengerIds = passengerIds;
     }
 
-    public Flight(){
+    public FlightDTO(){
 
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getDestination() {
@@ -88,11 +54,11 @@ public class Flight {
         this.departureTime = departureTime;
     }
 
-    public List<Passenger> getPassengers() {
-        return passengers;
+    public List<Long> getPassengerIds() {
+        return passengerIds;
     }
 
-    public void setPassengers(List<Passenger> passengers) {
-        this.passengers = passengers;
+    public void setPassengerIds(List<Long> passengerIds) {
+        this.passengerIds = passengerIds;
     }
 }
