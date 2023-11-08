@@ -41,32 +41,33 @@ public class FlightService {
     // Book a passenger on a flight
     @Transactional
     public Flight addPassengerToFlight(Long flightId, Long passengerId) {
-        Flight flight = flightRepository.findById(flightId)
-                .orElse(null);
+        Optional<Flight> flightOptional = flightRepository.findById(flightId);
+        Optional<Passenger> passengerOptional = passengerRepository.findById(passengerId);
 
-        Passenger passenger = passengerRepository.findById(passengerId)
-                .orElse(null);
-
-        if (flight == null) {
+        if (flightOptional.isEmpty()) {
             throw new IllegalArgumentException("Flight not found");
         }
 
-        if (passenger == null) {
+        if (passengerOptional.isEmpty()) {
             throw new IllegalArgumentException("Passenger not found");
         }
 
+        Flight flight = flightOptional.get();
+        Passenger passenger = passengerOptional.get();
+
         if (flight.getPassengers().contains(passenger)) {
-            throw new IllegalArgumentException("Passenger is already booked on this flight");
+            throw new IllegalArgumentException("Passenger is already on this flight");
         }
 
         if (flight.getPassengers().size() >= flight.getCapacity()) {
-            throw new IllegalArgumentException("The flight is already full");
+            throw new IllegalArgumentException("Flight is already at full capacity");
         }
 
         flight.getPassengers().add(passenger);
         flightRepository.save(flight);
         return flight;
     }
+
 
     // Cancel a flight
     @Transactional
