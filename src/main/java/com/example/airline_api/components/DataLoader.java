@@ -9,10 +9,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDate;  
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @Component
 public class DataLoader implements ApplicationRunner {
@@ -30,13 +28,9 @@ public class DataLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception{
 
-        // LocalDate and LocalTime formatter
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.UK);
-
         // Create and save flights
-        Flight flight1 = new Flight("Baku", 200, LocalDate.parse("2023-12-01", dateFormatter), LocalTime.parse("10:00 AM", timeFormatter));
-        Flight flight2 = new Flight("Tokyo", 150, LocalDate.parse("2023-12-02", dateFormatter), LocalTime.parse("11:00 AM", timeFormatter));
+        Flight flight1 = new Flight("Baku", 200, LocalDate.of(2023, 12, 1), LocalTime.of(10,10));
+        Flight flight2 = new Flight("Tokyo", 150, LocalDate.of(2023, 12, 2), LocalTime.of(11,30));
 
         flightRepository.save(flight1);
         flightRepository.save(flight2);
