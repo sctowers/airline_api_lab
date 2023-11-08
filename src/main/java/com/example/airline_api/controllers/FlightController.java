@@ -52,9 +52,9 @@ public class FlightController {
 
     // Cancel flight
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity cancelFlight(@PathVariable Long id){
+    public ResponseEntity<Flight> cancelFlight(@PathVariable Long id){
         Flight removeFlight = flightService.cancelFlight(id);
-        return new ResponseEntity(removeFlight, HttpStatus.OK);
+        return new ResponseEntity<>(removeFlight, HttpStatus.OK);
     }
 
     // Add functionality to filter flights by destination
