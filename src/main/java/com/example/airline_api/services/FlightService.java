@@ -41,29 +41,31 @@ public class FlightService {
     // Book a passenger on a flight
     @Transactional
     public Flight addPassengerToFlight(Long flightId, Long passengerId) {
-        Optional<Flight> flightOptional = flightRepository.findById(flightId);
-        Optional<Passenger> passengerOptional = passengerRepository.findById(passengerId);
+        Flight flight = flightRepository.findById(flightId)
+                .orElse(null);
 
-        if (flightOptional.isPresent() && passengerOptional.isPresent()){
-            Flight flight = flightOptional.get();
-            Passenger passenger = passengerOptional.get();
+        Passenger passenger = passengerRepository.findById(passengerId)
+                .orElse(null);
 
-            // Check if the flight is not full
-            if (flight.getPassengers().size() < flight.getCapacity()){
-                // Check if the passenger is not already booked on the flight
-                if (!flight.getPassengers().contains(passenger)){
-                    flight.getPassengers().add(passenger);
-                    flightRepository.save(flight);
-                    return flight;
-                } else {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Passenger is already booked on this flight");
-                }
-            } else {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "The flight is already full");
-            }
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Flight or passenger not found");
+        if (flight == null) {
+            throw new IllegalArgumentException("Flight not found");
         }
+
+        if (passenger == null) {
+            throw new IllegalArgumentException("Passenger not found");
+        }
+
+        if (flight.getPassengers().contains(passenger)) {
+            throw new IllegalArgumentException("Passenger is already booked on this flight");
+        }
+
+        if (flight.getPassengers().size() >= flight.getCapacity()) {
+            throw new IllegalArgumentException("The flight is already full");
+        }
+
+        flight.getPassengers().add(passenger);
+        flightRepository.save(flight);
+        return flight;
     }
 
     // Cancel a flight
@@ -77,7 +79,11 @@ public class FlightService {
     }
 
     // Add functionality to filter flights by destination
-    public List<Flight> getFlightsByDestination(String destination){
-        return flightRepository.findByDestination(destination);
+    public List<Flight> getFlightsByDestination(String destination) {
+        List<Flight> flights = flightRepository.findByDestination(destination);
+        if (flights.isEmpty()) {
+            throw new IllegalArgumentException("No flights found for the given destination");
+        }
+        return flights;
     }
 }

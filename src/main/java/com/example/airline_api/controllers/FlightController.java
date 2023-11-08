@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -40,9 +41,13 @@ public class FlightController {
     // Book passenger on a flight
     @PatchMapping(value = "/{id}")
     public ResponseEntity<Flight> addPassengerToFlight(@PathVariable Long flightId,
-                                                       @PathVariable Long passengerId){
-        Flight updatedFlight = flightService.addPassengerToFlight(flightId, passengerId);
-        return new ResponseEntity<>(updatedFlight, HttpStatus.OK);
+                                                       @PathVariable Long passengerId) {
+        try {
+            Flight updatedFlight = flightService.addPassengerToFlight(flightId, passengerId);
+            return new ResponseEntity<>(updatedFlight, HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     // Cancel flight
@@ -54,9 +59,12 @@ public class FlightController {
 
     // Add functionality to filter flights by destination
     @GetMapping("/byDestination")
-    public ResponseEntity<List<Flight>> getFlightsByDestination(@RequestBody String destination){
-        List<Flight> flights = flightService.getFlightsByDestination(destination);
-        return new ResponseEntity<>(flights, HttpStatus.OK);
+    public ResponseEntity<List<Flight>> getFlightsByDestination(@RequestParam String destination) {
+        try {
+            List<Flight> flights = flightService.getFlightsByDestination(destination);
+            return new ResponseEntity<>(flights, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
-
 }
