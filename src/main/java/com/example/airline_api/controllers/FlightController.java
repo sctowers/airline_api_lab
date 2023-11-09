@@ -39,7 +39,7 @@ public class FlightController {
     }
 
     // Book passenger on a flight
-    @PatchMapping(value = "/{id}")
+    @PatchMapping(value = "/{flightId}/{passengerId}")
     public ResponseEntity<Flight> addPassengerToFlight(@PathVariable Long flightId,
                                                        @PathVariable Long passengerId) {
         try {
